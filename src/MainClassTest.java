@@ -16,4 +16,11 @@ public class MainClassTest extends MainClass {
         Assert.assertTrue("Не верное число - " +getClassNumber()+ ", должно быть больше "+ number,
                 getClassNumber() > number);
     }
+
+    @Test
+    public void testGetClassString() {
+        String word = "hello";
+        Assert.assertTrue("В тексте нет слова - " + word,
+                getClassString().toLowerCase().contains(word.toLowerCase()));
+    }
 }
