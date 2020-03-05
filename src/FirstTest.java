@@ -85,8 +85,32 @@ public class FirstTest {
 
         listArticle = driver.findElements(By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_image']"));
         Assert.assertTrue("Список статей не пустой", listArticle.size()==0);
+    }
 
-       /* waitForElementAndClick(
+    @Test
+    public void testWordInSearch() {
+
+        waitForElementAndClick(
+                By.xpath("//*[contains(@text,'Search Wikipedia')]"),
+                "Cannot find Search Wikipedia input",
+                5);
+
+        waitForElementAndSendKeys(
+                By.xpath("//*[@resource-id='org.wikipedia:id/search_src_text']"),
+                "Selenium",
+                "Cannot find search input",
+                5
+        );
+
+        waitForElementPresent(By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_title']"));
+        List<WebElement> listArticle = driver.findElements(By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_title']"));
+
+        for (int i = 0; listArticle.size()>i; i++) {
+            Assert.assertTrue("Заголовок статьи "+listArticle.get(i).getText()+" не содержит слово - Selenium",
+                    listArticle.get(i).getText().contains("Selenium"));
+        }
+
+        waitForElementAndClick(
                 By.xpath("//*[@resource-id='org.wikipedia:id/search_close_btn']"),
                 "Cannot find X to cancel search",
                 15);
@@ -94,7 +118,7 @@ public class FirstTest {
         waitForElementNotPresent(
                 By.xpath("//*[@resource-id='org.wikipedia:id/search_close_btn']"),
                 "X is still present on the page",
-                5);*/
+                5);
     }
 
     private WebElement waitForElementPresent(By by, String error_message, long timeOutInSecond) {
