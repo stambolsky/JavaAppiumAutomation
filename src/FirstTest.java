@@ -157,6 +157,43 @@ public class FirstTest {
         );
     }
 
+    @Test
+    public void saveFirstArticleToMyList() {
+
+        waitForElementAndClick(
+                By.xpath("//*[contains(@text,'Search Wikipedia')]"),
+                "Cannot find Search Wikipedia input",
+                5);
+
+        waitForElementAndSendKeys(
+                By.xpath("//*[@resource-id='org.wikipedia:id/search_src_text']"),
+                "Appium",
+                "Cannot find search input",
+                5
+        );
+
+        waitForElementAndClick(
+                By.xpath("//*[@resource-id='org.wikipedia:id/search_results_list']//*[@text='Appium']"),
+                "Cannot find 'Search Wikipedia' input",
+                5
+        );
+
+        waitForElementPresent(
+                By.xpath("//*[@resource-id='org.wikipedia:id/page_contents_container']"),
+                "Cannot find article img",
+                15
+        );
+
+        waitForElementAndClick(
+                By.xpath("//android.widget.ImageView[@content-desk='More options']"),
+                "Cannot find button to open article options",
+                5
+        );
+
+    }
+
+
+
     private WebElement waitForElementPresent(By by, String error_message, long timeOutInSecond) {
         WebDriverWait wait = new WebDriverWait(driver, timeOutInSecond);
         wait.withMessage(error_message + "\n");
@@ -224,5 +261,58 @@ public class FirstTest {
             ++alreadySwipes;
         }
     }
+
+    private void logInWiKi(String login, String password) {
+        waitForElementAndClick(
+                By.xpath("//*[@resource-id='org.wikipedia:id/view_announcement_action_positive']"),
+                "Cannot find 'Log in' input",
+                5
+        );
+
+        waitForElementAndSendKeys(
+                By.xpath("//android.widget.EditText[@text='Username']"),
+                login,
+                "Cannot find 'UserName' input",
+                5
+        );
+
+        waitForElementAndSendKeys(
+                By.xpath("//android.widget.EditText[@text='Password']"),
+                password,
+                "Cannot find 'Password' input",
+                5
+        );
+
+        waitForElementAndClick(
+                By.xpath("//*[@resource-id='org.wikipedia:id/login_button']"),
+                "Cannot find button LogIn",
+                5);
+
+        /*waitForElementPresent(
+                By.xpath("//android.widget.TextView[@text='Turn on reading list sync?']"),
+                "Cannot find modal window",
+                20
+        );
+
+        waitForElementAndClick(
+                By.xpath("//*[@resource-id='android:id/button2']"),
+                "Cannot find 'No Thanks' button",
+                5);*/
+    }
+
+    private void expandMenu() {
+        waitForElementAndClick(
+                By.xpath("//*[@resource-id='org.wikipedia:id/drawer_icon_menu']"),
+                "Cannot find icon menu",
+                5);
+    }
+
+    private void logOut() {
+        waitForElementAndClick(
+                By.xpath("//*[@resource-id='org.wikipedia:id/main_drawer_login_button'][@text='Log out']"),
+                "Cannot find icon menu",
+                5);
+    }
+
 
 }
