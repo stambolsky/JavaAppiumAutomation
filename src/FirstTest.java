@@ -1,10 +1,12 @@
 import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -121,6 +123,40 @@ public class FirstTest {
                 5);
     }
 
+    @Test
+    public void testSwipeArticle() {
+
+        waitForElementAndClick(
+                By.xpath("//*[contains(@text,'Search Wikipedia')]"),
+                "Cannot find Search Wikipedia input",
+                5);
+
+        waitForElementAndSendKeys(
+                By.xpath("//*[@resource-id='org.wikipedia:id/search_src_text']"),
+                "Appium",
+                "Cannot find search input",
+                5
+        );
+
+        waitForElementAndClick(
+                By.xpath("//*[@resource-id='org.wikipedia:id/search_results_list']//*[@text='Appium']"),
+                "Cannot find 'Search Wikipedia' input",
+                5
+        );
+
+        waitForElementPresent(
+                By.xpath("//*[@resource-id='org.wikipedia:id/page_contents_container']"),
+                "Cannot find article img",
+                15
+        );
+
+        swipeUpToFindElement(
+                By.xpath("//*[@text='View page in browser']"),
+                "Cannot find the and of the article",
+                20
+        );
+    }
+
     private WebElement waitForElementPresent(By by, String error_message, long timeOutInSecond) {
         WebDriverWait wait = new WebDriverWait(driver, timeOutInSecond);
         wait.withMessage(error_message + "\n");
@@ -163,4 +199,30 @@ public class FirstTest {
         element.clear();
         return element;
     }
+
+    protected void swipeUp(int timeOfSwipe) {
+        TouchAction action = new TouchAction(driver);
+        Dimension size = driver.manage().window().getSize();
+        int x = size.width / 2;
+        int start_y = (int) (size.height * 0.8);
+        int end_y = (int) (size.height * 0.2);
+        action.press(x, start_y).waitAction(timeOfSwipe).moveTo(x, end_y).release().perform();
+    }
+
+    protected void swipeUpQuick() {
+        swipeUp(200);
+    }
+
+    protected void swipeUpToFindElement(By by, String error_message, int maxSwipes) {
+        int alreadySwipes = 0;
+        while (driver.findElements(by).size() == 0) {
+            if (alreadySwipes > maxSwipes) {
+                waitForElementPresent(by, "Cannot find element by swiping up. \n" + error_message, 0);
+                return;
+            }
+            swipeUpQuick();
+            ++alreadySwipes;
+        }
+    }
+
 }
