@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
+import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -374,6 +375,61 @@ public class FirstTest {
         );
     }
 
+    @Test
+    public void testChangeScreenOrientationOnSearchResults() {
+        String serchLine = "Java";
+
+        waitForElementAndClick(
+                By.xpath("//*[contains(@text,'Search Wikipedia')]"),
+                "Cannot find Search Wikipedia input",
+                5);
+
+        waitForElementAndSendKeys(
+                By.xpath("//*[@resource-id='org.wikipedia:id/search_src_text']"),
+                serchLine,
+                "Cannot find search input",
+                5
+        );
+
+        waitForElementAndClick(
+                By.xpath("//*[@resource-id='org.wikipedia:id/search_results_list']//*[@text='Object-oriented programming language']"),
+                "Cannot find article 'Object-oriented programming language' topic searching by " + serchLine,
+                15
+        );
+
+        String titleBeforRotation = waitForElementAndGetNameTag(
+                By.xpath("//android.view.View[@content-desc='Java (programming language)']"),
+                "content-desc",
+                "Cannot find title of article",
+                15
+        );
+
+        driver.rotate(ScreenOrientation.LANDSCAPE);
+        String titleAfterRotation = waitForElementAndGetNameTag(
+                By.xpath("//android.view.View[@content-desc='Java (programming language)']"),
+                "content-desc",
+                "Cannot find title of article",
+                15
+        );
+
+        Assert.assertEquals("Article title have been changed after screen rotation",
+                titleBeforRotation,
+                titleAfterRotation);
+
+        driver.rotate(ScreenOrientation.PORTRAIT);
+        String titleAfterSecondRotation = waitForElementAndGetNameTag(
+                By.xpath("//android.view.View[@content-desc='Java (programming language)']"),
+                "content-desc",
+                "Cannot find title of article",
+                15
+        );
+
+        Assert.assertEquals("Article title have been changed after screen rotation",
+                titleBeforRotation,
+                titleAfterSecondRotation);
+    }
+
+
     private WebElement waitForElementPresent(By by, String error_message, long timeOutInSecond) {
         WebDriverWait wait = new WebDriverWait(driver, timeOutInSecond);
         wait.withMessage(error_message + "\n");
@@ -476,6 +532,16 @@ public class FirstTest {
             String defaultMessage = "An Element '" + by.toString() + "' supposed to be not present";
             throw new AssertionError(defaultMessage + " " + errorMessage);
         }
+    }
+
+    private String waitForElementAndGetAttribute(By by, String attribute, String errorMessage, long tomeOutInSecond) {
+        WebElement element = waitForElementPresent(by, errorMessage, tomeOutInSecond);
+        return element.getAttribute(attribute);
+    }
+
+    private String waitForElementAndGetNameTag(By by, String attribute, String errorMessage, long tomeOutInSecond) {
+        WebElement element = waitForElementPresent(by, errorMessage, tomeOutInSecond);
+        return element.getTagName();
     }
 
     private void logInWiKi(String login, String password) {
