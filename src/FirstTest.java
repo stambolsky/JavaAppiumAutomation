@@ -158,8 +158,9 @@ public class FirstTest {
     }
 
     @Test
-    public void saveFirstArticleToMyList() {
+    public void saveArticlesToMyList() {
 
+        //logInWiKi("Borman666", "Borman12345678");
         waitForElementAndClick(
                 By.xpath("//*[contains(@text,'Search Wikipedia')]"),
                 "Cannot find Search Wikipedia input",
@@ -185,14 +186,124 @@ public class FirstTest {
         );
 
         waitForElementAndClick(
-                By.xpath("//android.widget.ImageView[@content-desk='More options']"),
-                "Cannot find button to open article options",
+                By.xpath("//*[@resource-id='org.wikipedia:id/article_menu_bookmark']"),
+                "Cannot find button to open Bookmark",
                 5
         );
 
+        waitForElementAndClick(
+                By.xpath("//*[@resource-id='org.wikipedia:id/onboarding_button']"),
+                "Cannot find button Got It",
+                5
+        );
+
+        waitForElementAndClick(
+                By.xpath("//android.widget.TextView[@text='Create new']"),
+                "Cannot find button Create new",
+                5
+        );
+
+        waitForElementAndSendKeys(
+                By.xpath("//android.widget.EditText[@text='Name of this list']"),
+                "My articles",
+                "Cannot find 'Name of this list' input",
+                5
+        );
+
+        waitForElementAndSendKeys(
+                By.xpath("//android.widget.EditText[@text='Description (optional)']"),
+                "My list",
+                "Cannot find 'Description' input",
+                5
+        );
+
+        waitForElementAndClick(
+                By.xpath("//*[@resource-id='android:id/button1']"),
+                "Cannot find button OK",
+                5);
+
+        waitForElementAndClick(
+                By.xpath("//android.widget.ImageButton[@content-desc='Navigate up']"),
+                "Cannot find button Navigate up",
+                5);
+
+        waitForElementAndClick(
+                By.xpath("//*[contains(@text,'Search Wikipedia')]"),
+                "Cannot find Search Wikipedia input",
+                5);
+
+        waitForElementAndSendKeys(
+                By.xpath("//*[@resource-id='org.wikipedia:id/search_src_text']"),
+                "Java",
+                "Cannot find search input",
+                5
+        );
+
+        waitForElementAndClick(
+                By.xpath("//*[@resource-id='org.wikipedia:id/search_results_list']//*[@text='Object-oriented programming language']"),
+                "Cannot find article 'Java'",
+                5
+        );
+
+        waitForElementAndClick(
+                By.xpath("//*[@resource-id='org.wikipedia:id/article_menu_bookmark']"),
+                "Cannot find button to open Bookmark",
+                5
+        );
+
+        waitForElementAndClick(
+                By.xpath("//*[contains(@text,'My articles')]"),
+                "Cannot find list 'My articles'",
+                5
+        );
+
+        waitForElementAndClick(
+                By.xpath("//*[@resource-id='org.wikipedia:id/page_toolbar_button_show_overflow_menu']"),
+                "Cannot find button to open More menu",
+                5
+        );
+
+        waitForElementAndClick(
+                By.xpath("//*[@resource-id='org.wikipedia:id/page_action_overflow_reading_lists']"),
+                "Cannot find button to open Reading lists",
+                5
+        );
+
+        waitForElementAndClick(
+                By.xpath("//*[contains(@text,'My articles')]"),
+                "Cannot find button to open 'My articles' lists",
+                5
+        );
+
+        swipeElementToLeft(
+                By.xpath("//*[@text='Appium']"),
+                "Cannot find saved article"
+        );
+
+        waitForElementNotPresent(
+                By.xpath("//*[@text='Appium']"),
+                "Cannot delete saved article 'Appium'",
+                15
+        );
+
+        waitForElementPresent(
+                By.xpath("//*[@text='Java (programming language)']"),
+                "Cannot find article 'Java (programming language)'",
+                5
+        );
+
+        waitForElementAndClick(
+                By.xpath("//*[@text='Java (programming language)']"),
+                "Cannot find article 'Java (programming language)'",
+                15
+        );
+
+        waitForElementPresent(By.xpath("//*[@content-desc='Java (programming language)']"));
+        WebElement article = driver.findElement(By.xpath("//android.view.View[@content-desc='Java (programming language)']"));
+
+        Assert.assertTrue("Заголовок статьи "+article.getTagName()+" не содержит - Java (programming language)",
+                article.getTagName().contains("Java (programming language)"));
     }
-
-
 
     private WebElement waitForElementPresent(By by, String error_message, long timeOutInSecond) {
         WebDriverWait wait = new WebDriverWait(driver, timeOutInSecond);
@@ -243,7 +354,12 @@ public class FirstTest {
         int x = size.width / 2;
         int start_y = (int) (size.height * 0.8);
         int end_y = (int) (size.height * 0.2);
-        action.press(x, start_y).waitAction(timeOfSwipe).moveTo(x, end_y).release().perform();
+        action
+                .press(x, start_y)
+                .waitAction(timeOfSwipe)
+                .moveTo(x, end_y)
+                .release()
+                .perform();
     }
 
     protected void swipeUpQuick() {
@@ -260,6 +376,24 @@ public class FirstTest {
             swipeUpQuick();
             ++alreadySwipes;
         }
+    }
+
+    protected void swipeElementToLeft(By by, String errror_message) {
+        WebElement element = waitForElementPresent(by, errror_message, 10);
+        int left_x = element.getLocation().getX();
+        int right_x = left_x + element.getSize().getWidth();
+        int upper_y = element.getLocation().getY();
+        int lower_y = upper_y + element.getSize().getHeight();
+        int middle_y = (upper_y + lower_y) / 2;
+
+        TouchAction action = new TouchAction(driver);
+        action
+                .press(right_x, middle_y)
+                .waitAction(150)
+                .moveTo(left_x, middle_y)
+                .release()
+                .perform();
+
     }
 
     private void logInWiKi(String login, String password) {
