@@ -43,6 +43,9 @@ public class FirstTest {
 
     @After
     public void tearDown() {
+        if (driver.getOrientation().name().equals("LANDSCAPE")) {
+            driver.rotate(ScreenOrientation.PORTRAIT);
+        }
         driver.quit();
     }
 
