@@ -161,6 +161,11 @@ public class FirstTest {
     public void saveArticlesToMyList() {
 
         //logInWiKi("Borman666", "Borman12345678");
+        String nameArticle = "Appium";
+        String nameArticle_2 = "Java (programming language)";
+        String nameList = "My articles";
+        String descriptionList = "My list";
+
         waitForElementAndClick(
                 By.xpath("//*[contains(@text,'Search Wikipedia')]"),
                 "Cannot find Search Wikipedia input",
@@ -168,13 +173,13 @@ public class FirstTest {
 
         waitForElementAndSendKeys(
                 By.xpath("//*[@resource-id='org.wikipedia:id/search_src_text']"),
-                "Appium",
+                nameArticle,
                 "Cannot find search input",
                 5
         );
 
         waitForElementAndClick(
-                By.xpath("//*[@resource-id='org.wikipedia:id/search_results_list']//*[@text='Appium']"),
+                By.xpath("//*[@resource-id='org.wikipedia:id/search_results_list']//*[@text='"+nameArticle+"']"),
                 "Cannot find 'Search Wikipedia' input",
                 5
         );
@@ -205,14 +210,14 @@ public class FirstTest {
 
         waitForElementAndSendKeys(
                 By.xpath("//android.widget.EditText[@text='Name of this list']"),
-                "My articles",
+                nameList,
                 "Cannot find 'Name of this list' input",
                 5
         );
 
         waitForElementAndSendKeys(
                 By.xpath("//android.widget.EditText[@text='Description (optional)']"),
-                "My list",
+                descriptionList,
                 "Cannot find 'Description' input",
                 5
         );
@@ -252,8 +257,8 @@ public class FirstTest {
         );
 
         waitForElementAndClick(
-                By.xpath("//*[contains(@text,'My articles')]"),
-                "Cannot find list 'My articles'",
+                By.xpath("//*[contains(@text,'"+nameList+"')]"),
+                "Cannot find list "+nameList,
                 5
         );
 
@@ -271,38 +276,102 @@ public class FirstTest {
 
         waitForElementAndClick(
                 By.xpath("//*[contains(@text,'My articles')]"),
-                "Cannot find button to open 'My articles' lists",
+                "Cannot find button to open '"+nameList+"' lists",
                 5
         );
 
         swipeElementToLeft(
-                By.xpath("//*[@text='Appium']"),
+                By.xpath("//*[@text='"+nameArticle+"']"),
                 "Cannot find saved article"
         );
 
         waitForElementNotPresent(
-                By.xpath("//*[@text='Appium']"),
-                "Cannot delete saved article 'Appium'",
+                By.xpath("//*[@text='"+nameArticle+"']"),
+                "Cannot delete saved article '"+nameArticle+"'",
                 15
         );
 
         waitForElementPresent(
-                By.xpath("//*[@text='Java (programming language)']"),
-                "Cannot find article 'Java (programming language)'",
+                By.xpath("//*[@text='"+nameArticle_2+"']"),
+                "Cannot find article '"+nameArticle_2+"'",
                 5
         );
 
         waitForElementAndClick(
-                By.xpath("//*[@text='Java (programming language)']"),
-                "Cannot find article 'Java (programming language)'",
+                By.xpath("//*[@text='"+nameArticle_2+"']"),
+                "Cannot find article '"+nameArticle_2+"'",
                 15
         );
 
-        waitForElementPresent(By.xpath("//*[@content-desc='Java (programming language)']"));
-        WebElement article = driver.findElement(By.xpath("//android.view.View[@content-desc='Java (programming language)']"));
+        waitForElementPresent(By.xpath("//*[@content-desc='"+nameArticle_2+"']"));
+        WebElement article = driver.findElement(By.xpath("//android.view.View[@content-desc='"+nameArticle_2+"']"));
 
-        Assert.assertTrue("Заголовок статьи "+article.getTagName()+" не содержит - Java (programming language)",
-                article.getTagName().contains("Java (programming language)"));
+        Assert.assertTrue("Заголовок статьи "+article.getTagName()+" не содержит - "+nameArticle_2,
+                article.getTagName().contains(nameArticle_2));
+    }
+
+    @Test
+    public void testAmountOfNotEmptySearch() {
+
+        String serchLine = "Linkin Park Diskography";
+
+        waitForElementAndClick(
+                By.xpath("//*[contains(@text,'Search Wikipedia')]"),
+                "Cannot find Search Wikipedia input",
+                5);
+
+        waitForElementAndSendKeys(
+                By.xpath("//*[@resource-id='org.wikipedia:id/search_src_text']"),
+                serchLine,
+                "Cannot find search input",
+                5
+        );
+
+        String searchResultLocator = "//*[@resource-id='org.wikipedia:id/fragment_search_results']//*[@resource-id='org.wikipedia:id/page_list_item_title']";
+        waitForElementPresent(
+                By.xpath(searchResultLocator),
+                "Cannot find anything by the request " + serchLine,
+                15
+        );
+
+        int amountOfSearchResult = getAmountOfElements(
+                By.xpath(searchResultLocator)
+        );
+
+        Assert.assertTrue("We found too few results!",
+                amountOfSearchResult > 0);
+    }
+
+    @Test
+    public void testAmountOfEmptySearch() {
+
+        String serchLine = "fhdkj";
+
+        waitForElementAndClick(
+                By.xpath("//*[contains(@text,'Search Wikipedia')]"),
+                "Cannot find Search Wikipedia input",
+                5);
+
+        waitForElementAndSendKeys(
+                By.xpath("//*[@resource-id='org.wikipedia:id/search_src_text']"),
+                serchLine,
+                "Cannot find search input",
+                5
+        );
+
+        String searchResultLocator = "//*[@resource-id='org.wikipedia:id/fragment_search_results']//*[@resource-id='org.wikipedia:id/page_list_item_title']";
+        String emptyResultLabel = "//*[@text='No results found']";
+
+        waitForElementPresent(
+                By.xpath(emptyResultLabel),
+                "Cannot find empty result label by the request " + serchLine,
+                15
+        );
+
+        assertElementNotPresent(
+                By.xpath(searchResultLocator),
+                "We've found some results by request " + serchLine
+        );
     }
 
     private WebElement waitForElementPresent(By by, String error_message, long timeOutInSecond) {
@@ -394,6 +463,19 @@ public class FirstTest {
                 .release()
                 .perform();
 
+    }
+
+    private int getAmountOfElements(By by) {
+        List elements = driver.findElements(by);
+        return elements.size();
+    }
+
+    private void assertElementNotPresent(By by, String errorMessage) {
+        int amoutOfElement = getAmountOfElements(by);
+        if (amoutOfElement > 0) {
+            String defaultMessage = "An Element '" + by.toString() + "' supposed to be not present";
+            throw new AssertionError(defaultMessage + " " + errorMessage);
+        }
     }
 
     private void logInWiKi(String login, String password) {
