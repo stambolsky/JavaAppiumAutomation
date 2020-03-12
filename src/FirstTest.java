@@ -457,6 +457,46 @@ public class FirstTest {
         );
     }
 
+    @Test
+    public void testCheckSearchArticleInBackground() {
+
+        String nameArticle = "Appium";
+        String nameArticle_2 = "Java (programming language)";
+        String nameList = "My articles";
+        String descriptionList = "My list";
+
+        waitForElementAndClick(
+                By.xpath("//*[contains(@text,'Search Wikipedia')]"),
+                "Cannot find Search Wikipedia input",
+                5);
+
+        waitForElementAndSendKeys(
+                By.xpath("//*[@resource-id='org.wikipedia:id/search_src_text']"),
+                nameArticle,
+                "Cannot find search input",
+                5
+        );
+
+        waitForElementAndClick(
+                By.xpath("//*[@resource-id='org.wikipedia:id/search_results_list']//*[@text='"+nameArticle+"']"),
+                "Cannot find 'Search Wikipedia' input",
+                5
+        );
+
+        waitForElementPresent(
+                By.xpath("//*[@resource-id='org.wikipedia:id/page_contents_container']"),
+                "Cannot find article img",
+                15
+        );
+
+        driver.runAppInBackground(2);
+
+        waitForElementPresent(
+                By.xpath("//*[@resource-id='org.wikipedia:id/page_contents_container']"),
+                "Cannot find article img",
+                15
+        );
+    }
 
     private WebElement waitForElementPresent(By by, String error_message, long timeOutInSecond) {
         WebDriverWait wait = new WebDriverWait(driver, timeOutInSecond);
