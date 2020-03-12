@@ -432,6 +432,31 @@ public class FirstTest {
                 titleAfterSecondRotation);
     }
 
+    @Test
+    public void testCheckTitleArticle() {
+
+        String serchLine = "Selenium";
+
+        waitForElementAndClick(
+                By.xpath("//*[contains(@text,'Search Wikipedia')]"),
+                "Cannot find Search Wikipedia input",
+                5);
+
+        waitForElementAndSendKeys(
+                By.xpath("//*[@resource-id='org.wikipedia:id/search_src_text']"),
+                serchLine,
+                "Cannot find search input",
+                5
+        );
+
+        String title = "//*[@resource-id='org.wikipedia:id/fragment_search_results']//*[@resource-id='org.wikipedia:id/page_list_item_title']";
+
+        assertElementPresent(
+                By.xpath(title),
+                "We've found some results by request " + serchLine
+        );
+    }
+
 
     private WebElement waitForElementPresent(By by, String error_message, long timeOutInSecond) {
         WebDriverWait wait = new WebDriverWait(driver, timeOutInSecond);
@@ -532,6 +557,14 @@ public class FirstTest {
     private void assertElementNotPresent(By by, String errorMessage) {
         int amoutOfElement = getAmountOfElements(by);
         if (amoutOfElement > 0) {
+            String defaultMessage = "An Element '" + by.toString() + "' supposed to be not present";
+            throw new AssertionError(defaultMessage + " " + errorMessage);
+        }
+    }
+
+    private void assertElementPresent(By by, String errorMessage) {
+        int amoutOfElement = getAmountOfElements(by);
+        if (amoutOfElement < 1) {
             String defaultMessage = "An Element '" + by.toString() + "' supposed to be not present";
             throw new AssertionError(defaultMessage + " " + errorMessage);
         }
