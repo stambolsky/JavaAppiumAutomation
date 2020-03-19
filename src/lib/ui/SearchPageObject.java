@@ -16,9 +16,11 @@ public class SearchPageObject extends MainPageObject {
             SEARCH_RESULT_LIST = "//*[@resource-id='org.wikipedia:id/page_list_item_title']",
             SEARCH_RESULT_LIST_IMAGE = "//*[@resource-id='org.wikipedia:id/page_list_item_image']",
             SEARCH_RESULT_ELEMENT = "//*[@resource-id='org.wikipedia:id/fragment_search_results']//*[@resource-id='org.wikipedia:id/page_list_item_title']",
+            SEARCH_EMPTY_RESULT_ELEMENT = "//*[@text='No results found']",
             SEARCH_RESULT_LIST_BY_SUBSTRING_TPL = "//*[@resource-id='org.wikipedia:id/search_results_list']//*[@text='{SUBSTRING}']",
             SEARCH_RESULT_BY_SUBSTRING_TPL = "//*[contains(@text,'{SUBSTRING}')]",
-            SEARCH_EMPTY_RESULT_ELEMENT = "//*[@text='No results found']";
+            SEARCH_RESULT_LIST_TITLE_TPL = "//*[@resource-id='org.wikipedia:id/page_list_item_title'][@text='{TITLE}']",
+            SEARCH_RESULT_LIST_DESCRIPTION_TPL = "//*[@resource-id='org.wikipedia:id/page_list_item_description'][@text='{DESCRIPTION}']";
 
     public SearchPageObject(AppiumDriver driver) {
 
@@ -29,7 +31,17 @@ public class SearchPageObject extends MainPageObject {
     private static String getResultSearchElement(String element, String substring) {
         return element.replace("{SUBSTRING}", substring);
     }
+
+    private static String getResultSearchByTitleAndDescription(String title, String description) {
+        return SEARCH_RESULT_LIST_TITLE_TPL.replace("{TITLE}", title)
+                + "/.." + SEARCH_RESULT_LIST_DESCRIPTION_TPL.replace("{DESCRIPTION}", description);
+    }
     /* TEMPLATES METHODS */
+
+    public void waitForElementByTitleAndDescription(String title, String description) {
+        this.waitForElementPresent(By.xpath(getResultSearchByTitleAndDescription(title, description)),
+                "Cannot find article in search result", 10);
+    }
 
     public void initSearchInputAndCheckText(String search_line) {
         this.waitForElementAndClick(By.xpath(SEARCH_INIT_ELEMENT), "Cannot find Search Wikipedia input", 5);
