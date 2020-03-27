@@ -2,8 +2,6 @@
   <library name="java-client-4.1.2">
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/libs/java-client-4.1.2.jar!/" />
-      <root url="jar://$PROJECT_DIR$/libs/junit-4.13.jar!/" />
-      <root url="jar://$PROJECT_DIR$/libs/selenium-server-standalone-3.4.0.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
