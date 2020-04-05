@@ -53,18 +53,6 @@ public class SearchTests extends CoreTestCase {
     }
 
     @Test
-    public void testAmountOfEmptySearch() {
-        SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
-        SearchPageObject.waitSearchResultAndClick("Skip");
-        SearchPageObject.clickBySeachField();
-
-        String serchLine = "fhdkj";
-        SearchPageObject.typeSearchLine(serchLine);
-        SearchPageObject.waitForEmptyResultsLabel();
-        SearchPageObject.assertThereIsNoResultOfSearch();
-    }
-
-    @Test
     public void testSearchArticleByTitleAndDescription() {
         SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
         SearchPageObject.waitSearchResultAndClick("Skip");
@@ -76,6 +64,17 @@ public class SearchTests extends CoreTestCase {
         assertTrue("We found too few results!",
                 amountOfSearchResult > 3);
         SearchPageObject.waitForElementByTitleAndDescription(searchLine, description);
+    }
 
+    @Test
+    public void testAmountOfEmptySearch() {
+        SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
+        SearchPageObject.waitSearchResultAndClick("Skip");
+        SearchPageObject.clickBySeachField();
+
+        String serchLine = "fhdkj";
+        SearchPageObject.typeSearchLine(serchLine);
+        SearchPageObject.waitForEmptyResultsLabel();
+        SearchPageObject.assertThereIsNoResultOfSearch();
     }
 }

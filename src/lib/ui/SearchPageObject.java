@@ -35,7 +35,7 @@ abstract public class SearchPageObject extends MainPageObject {
 
     private static String getResultSearchByTitleAndDescription(String title, String description) {
         return SEARCH_RESULT_LIST_TITLE_TPL.replace("{TITLE}", title)
-                + "/.." + SEARCH_RESULT_LIST_DESCRIPTION_TPL.replace("{DESCRIPTION}", description);
+                + "/.." + SEARCH_RESULT_LIST_DESCRIPTION_TPL.replace("{DESCRIPTION}", description).replaceAll("xpath:", "");
     }
     /* TEMPLATES METHODS */
 
