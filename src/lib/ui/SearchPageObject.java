@@ -1,26 +1,27 @@
 package lib.ui;
 
 import io.appium.java_client.AppiumDriver;
+import lib.Platform;
 import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 import java.util.List;
 
-public class SearchPageObject extends MainPageObject {
+abstract public class SearchPageObject extends MainPageObject {
 
-    private static final String
-            SEARCH_INIT_ELEMENT = "xpath://*[contains(@text,'Search Wikipedia')]",
-            SEARCH_INPUT = "xpath://*[@resource-id='org.wikipedia:id/search_src_text']",
-            SEARCH_CANCEL_BUTTON = "xpath://*[@resource-id='org.wikipedia:id/search_close_btn']",
-            SEARCH_RESULT_LIST = "xpath://*[@resource-id='org.wikipedia:id/page_list_item_title']",
-            SEARCH_RESULT_LIST_IMAGE = "xpath://*[@resource-id='org.wikipedia:id/page_list_item_image']",
-            SEARCH_RESULT_ELEMENT = "xpath://*[@resource-id='org.wikipedia:id/fragment_search_results']//*[@resource-id='org.wikipedia:id/page_list_item_title']",
-            SEARCH_EMPTY_RESULT_ELEMENT = "xpath://*[@text='No results found']",
-            SEARCH_RESULT_LIST_BY_SUBSTRING_TPL = "xpath://*[@resource-id='org.wikipedia:id/search_results_list']//*[@text='{SUBSTRING}']",
-            SEARCH_RESULT_BY_SUBSTRING_TPL = "xpath://*[contains(@text,'{SUBSTRING}')]",
-            SEARCH_RESULT_LIST_TITLE_TPL = "xpath://*[@resource-id='org.wikipedia:id/page_list_item_title'][@text='{TITLE}']",
-            SEARCH_RESULT_LIST_DESCRIPTION_TPL = "xpath://*[@resource-id='org.wikipedia:id/page_list_item_description'][@text='{DESCRIPTION}']";
+    protected static String
+            SEARCH_INIT_ELEMENT,
+            SEARCH_INPUT,
+            SEARCH_CANCEL_BUTTON,
+            SEARCH_RESULT_LIST,
+            SEARCH_RESULT_LIST_IMAGE,
+            SEARCH_RESULT_ELEMENT,
+            SEARCH_EMPTY_RESULT_ELEMENT,
+            SEARCH_RESULT_LIST_BY_SUBSTRING_TPL,
+            SEARCH_RESULT_BY_SUBSTRING_TPL,
+            SEARCH_RESULT_LIST_TITLE_TPL,
+            SEARCH_RESULT_LIST_DESCRIPTION_TPL;
 
     public SearchPageObject(AppiumDriver driver) {
 
@@ -44,8 +45,12 @@ public class SearchPageObject extends MainPageObject {
     }
 
     public void initSearchInputAndCheckText(String search_line) {
-        this.waitForElementAndClick(SEARCH_INIT_ELEMENT, "Cannot find Search Wikipedia input", 20);
-        this.waitForElementAndCheckText(SEARCH_INPUT, search_line, "Cannot find Search Wikipedia input",  20);
+        this.waitForElementAndClick(SEARCH_INIT_ELEMENT, "Cannot find Search Wikipedia input", 25);
+        this.waitForElementAndCheckText(SEARCH_INPUT, search_line, "Cannot find Search Wikipedia input",  25);
+    }
+
+    public void clickBySeachField() {
+        this.waitForElementAndClick(SEARCH_INIT_ELEMENT, "Cannot find Search Wikipedia input", 30);
     }
 
     public void waitAndCheckWordTitleArticle(String wordInTitle) {
@@ -71,7 +76,7 @@ public class SearchPageObject extends MainPageObject {
     }
 
     public void typeSearchLine(String search_line) {
-        this.waitForElementAndSendKeys(SEARCH_INPUT, search_line, "Cannot find search input", 5);
+        this.waitForElementAndSendKeys(SEARCH_INPUT, search_line, "Cannot find search input", 15);
     }
 
     public void clickByArticleWithSubstring(String subString) {
@@ -80,8 +85,10 @@ public class SearchPageObject extends MainPageObject {
     }
 
     public void waitSearchResultAndClick(String subString) {
-        String search_result_xpath = getResultSearchElement(SEARCH_RESULT_BY_SUBSTRING_TPL, subString);
-        this.waitForElementAndClick(search_result_xpath, "Cannot find search result with substring " + subString, 5);
+        if (Platform.getInstance().isAndroid()) {
+            String search_result_xpath = getResultSearchElement(SEARCH_RESULT_BY_SUBSTRING_TPL, subString);
+            this.waitForElementAndClick(search_result_xpath, "Cannot find search result with substring " + subString, 5);
+        }
     }
 
     public void waitAndCheckArticlesMoreZero() {

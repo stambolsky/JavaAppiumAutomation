@@ -1,12 +1,13 @@
 package lib.ui;
 
 import io.appium.java_client.AppiumDriver;
+import lib.Platform;
 import org.openqa.selenium.By;
 
-public class MyLIstPageObject extends MainPageObject {
+abstract public class MyLIstPageObject extends MainPageObject {
 
-    private static final String
-            FIND_ELEMENT_BY_SUBSTRING_TPL = "xpath://*[contains(@text,'{SUBSTRING}')]";
+    protected static String
+            FIND_ELEMENT_BY_SUBSTRING_TPL;
 
     public MyLIstPageObject(AppiumDriver driver) {
         super(driver);
@@ -36,6 +37,9 @@ public class MyLIstPageObject extends MainPageObject {
     public void swipeArticleToDelete(String article_title) {
         this.waitForArticleToAppearByTitle(article_title);
         this.swipeElementToLeft(getFindElementSubstring(FIND_ELEMENT_BY_SUBSTRING_TPL, article_title), "Cannot find the end of article");
+        if (Platform.getInstance().isIOS()) {
+            this.clickElementToTheRightUpperCorner(article_title, "Cannot find saved article");
+        }
         this.waitForArticleToDisappearByTitle(article_title);
     }
 

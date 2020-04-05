@@ -2,23 +2,24 @@ package tests;
 
 import lib.CoreTestCase;
 import lib.ui.SearchPageObject;
+import lib.ui.factories.SearchPageObjectFactory;
 import org.junit.Test;
 
 public class SearchTests extends CoreTestCase {
 
     @Test
     public void testSearch() throws InterruptedException {
-        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
         SearchPageObject.waitSearchResultAndClick("Skip");
-        SearchPageObject.waitSearchResultAndClick("Search Wikipedia");
+        SearchPageObject.clickBySeachField();
         SearchPageObject.initSearchInputAndCheckText("Search Wikipedia");
     }
 
     @Test
     public void testCancelSearch() {
-        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
         SearchPageObject.waitSearchResultAndClick("Skip");
-        SearchPageObject.waitSearchResultAndClick("Search Wikipedia");
+        SearchPageObject.clickBySeachField();
         SearchPageObject.typeSearchLine("Java");
         SearchPageObject.waitAndCheckArticlesMoreZero();
         SearchPageObject.waitAndCheckArticlesEquallyZero();
@@ -27,9 +28,9 @@ public class SearchTests extends CoreTestCase {
     @Test
     public void testWordInSearch() {
         String word = "Selenium";
-        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
         SearchPageObject.waitSearchResultAndClick("Skip");
-        SearchPageObject.waitSearchResultAndClick("Search Wikipedia");
+        SearchPageObject.clickBySeachField();
         SearchPageObject.typeSearchLine(word);
         SearchPageObject.waitAndCheckWordTitleArticle(word);
         SearchPageObject.waitForCancelButtonToAppear();
@@ -39,9 +40,9 @@ public class SearchTests extends CoreTestCase {
 
     @Test
     public void testAmountOfNotEmptySearch() {
-        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
         SearchPageObject.waitSearchResultAndClick("Skip");
-        SearchPageObject.waitSearchResultAndClick("Search Wikipedia");
+        SearchPageObject.clickBySeachField();
 
         String serchLine = "Linkin Park Diskography";
         SearchPageObject.typeSearchLine(serchLine);
@@ -53,9 +54,9 @@ public class SearchTests extends CoreTestCase {
 
     @Test
     public void testAmountOfEmptySearch() {
-        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
         SearchPageObject.waitSearchResultAndClick("Skip");
-        SearchPageObject.waitSearchResultAndClick("Search Wikipedia");
+        SearchPageObject.clickBySeachField();
 
         String serchLine = "fhdkj";
         SearchPageObject.typeSearchLine(serchLine);
@@ -65,9 +66,9 @@ public class SearchTests extends CoreTestCase {
 
     @Test
     public void testSearchArticleByTitleAndDescription() {
-        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
         SearchPageObject.waitSearchResultAndClick("Skip");
-        SearchPageObject.waitSearchResultAndClick("Search Wikipedia");
+        SearchPageObject.clickBySeachField();
         String searchLine = "Belarus";
         String description = "Country in Eastern Europe";
         SearchPageObject.typeSearchLine(searchLine);

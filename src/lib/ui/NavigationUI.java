@@ -5,18 +5,17 @@ import org.openqa.selenium.By;
 
 import java.security.PublicKey;
 
-public class NavigationUI extends MainPageObject {
+abstract public class NavigationUI extends MainPageObject {
 
-    private static final String
-            MORE_MENU_HEADER = "xpath://*[@resource-id='org.wikipedia:id/page_toolbar_button_show_overflow_menu']",
-            MORE_MENU_READING_LIST = "xpath://*[@resource-id='org.wikipedia:id/page_action_overflow_reading_lists']",
-            NAVIGATION_BUTTON = "xpath://android.widget.ImageButton[@content-desc='Navigate up']";
+    protected static String
+            MORE_MENU_HEADER,
+            MORE_MENU_READING_LIST,
+            NAVIGATION_BUTTON,
+            GO_TO_START_PAGE_BUTTON,
+            SAVED_LIST,
+            CLOSE_BUTTON;
     public NavigationUI(AppiumDriver driver) {
         super(driver);
-    }
-
-    public void clickMyList() {
-
     }
 
     public void clickNavigateUp() {
@@ -29,5 +28,17 @@ public class NavigationUI extends MainPageObject {
 
     public void chooseReadingListInMoreMenu() {
         this.waitForElementAndClick(MORE_MENU_READING_LIST, "Cannot find button to open Reading lists", 5);
+    }
+
+    public void goToStartPage() {
+        this.waitForElementAndClick(GO_TO_START_PAGE_BUTTON, "Cannot find button to open Start PAge", 5);
+    }
+
+    public void clickSavedList() {
+        this.waitForElementAndClick(SAVED_LIST, "Cannot find button open Saved List", 5);
+    }
+
+    public void clickCloseButton() {
+        this.waitForElementAndClick(CLOSE_BUTTON, "Cannot find button Close", 15);
     }
 }
