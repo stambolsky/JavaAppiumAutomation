@@ -8,15 +8,21 @@ import lib.ui.android.AndroidArticlPageObject;
 import lib.ui.android.AndroidMyLIstPageObject;
 import lib.ui.ios.IOSArticlePageObject;
 import lib.ui.ios.IOSMyLIstPageObject;
+import lib.ui.mobile_web.MWMyListsPageObject;
+import lib.ui.mobile_web.MWNavigationUI;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 public class MyLIstPageObjectFactory {
 
-    public static MyLIstPageObject get(AppiumDriver driver) {
+    public static MyLIstPageObject get(RemoteWebDriver driver) {
 
         if (Platform.getInstance().isAndroid()) {
             return new AndroidMyLIstPageObject(driver);
-        } else {
+        } else if (Platform.getInstance().isIOS()){
             return new IOSMyLIstPageObject(driver);
+        } else {
+            return new MWMyListsPageObject(driver) {
+            };
         }
     }
 }

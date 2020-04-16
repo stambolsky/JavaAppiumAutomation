@@ -1,6 +1,7 @@
 package tests;
 
 import lib.CoreTestCase;
+import lib.Platform;
 import lib.ui.ArticlePageObject;
 import lib.ui.SearchPageObject;
 import lib.ui.factories.ArticlePageObjectFactory;
@@ -11,6 +12,9 @@ public class ChangeAppCondichionTests extends CoreTestCase {
 
     @Test
     public void testChangeScreenOrientationOnSearchResults() {
+        if (Platform.getInstance().isMw()) {
+            return;
+        }
         SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
         SearchPageObject.waitSearchResultAndClick("Skip");
         SearchPageObject.waitSearchResultAndClick("Search Wikipedia");
@@ -39,6 +43,9 @@ public class ChangeAppCondichionTests extends CoreTestCase {
 
     @Test
     public void testCheckSearchArticleInBackground() {
+        if (Platform.getInstance().isMw()) {
+            return;
+        }
         String searchLine = "Appium";
         SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
         SearchPageObject.waitSearchResultAndClick("Skip");

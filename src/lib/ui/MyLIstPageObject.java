@@ -3,13 +3,15 @@ package lib.ui;
 import io.appium.java_client.AppiumDriver;
 import lib.Platform;
 import org.openqa.selenium.By;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 abstract public class MyLIstPageObject extends MainPageObject {
 
     protected static String
-            FIND_ELEMENT_BY_SUBSTRING_TPL;
+            FIND_ELEMENT_BY_SUBSTRING_TPL,
+            REMOVE_FROM_SAVED_BUTTON;
 
-    public MyLIstPageObject(AppiumDriver driver) {
+    public MyLIstPageObject(RemoteWebDriver driver) {
         super(driver);
     }
 
@@ -18,6 +20,10 @@ abstract public class MyLIstPageObject extends MainPageObject {
         return element.replace("{SUBSTRING}", substring);
     }
     /* TEMPLATES METHODS */
+
+    public static String getRemoveButtonByTitle(String article_title) {
+        return REMOVE_FROM_SAVED_BUTTON.replace("{SUBSTRING}", article_title);
+    }
 
     public void openFolderByName(String nameFolder) {
         String folderNameXpath = getFindElementSubstring(FIND_ELEMENT_BY_SUBSTRING_TPL, nameFolder);
@@ -36,11 +42,20 @@ abstract public class MyLIstPageObject extends MainPageObject {
 
     public void swipeArticleToDelete(String article_title) {
         this.waitForArticleToAppearByTitle(article_title);
-        this.swipeElementToLeft(getFindElementSubstring(FIND_ELEMENT_BY_SUBSTRING_TPL, article_title), "Cannot find the end of article");
-        if (Platform.getInstance().isIOS()) {
-            this.clickElementToTheRightUpperCorner(article_title, "Cannot find saved article");
+        if (Platform.getInstance().isIOS() || Platform.getInstance().isAndroid()) {
+            this.swipeElementToLeft(getFindElementSubstring(FIND_ELEMENT_BY_SUBSTRING_TPL, article_title), "Cannot find the end of article");
+            if (Platform.getInstance().isIOS()) {
+                this.clickElementToTheRightUpperCorner(article_title, "Cannot find saved article");
+            }
+            this.waitForArticleToDisappearByTitle(article_title);
+        } else {
+            String remove_locator = getRemoveButtonByTitle(article_title);
+            this.waitForElementAndClick(remove_locator, "Cannot click to remove article from saved", 15);
         }
-        this.waitForArticleToDisappearByTitle(article_title);
+
+        if (Platform.getInstance().isMw()) {
+            driver.navigate().refresh();
+        }
     }
 
     public void openArticleFromMyList(String article_title) {

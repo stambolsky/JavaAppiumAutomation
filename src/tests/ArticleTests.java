@@ -27,7 +27,9 @@ public class ArticleTests extends CoreTestCase {
     public void testCheckTitleArticle() {
         SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
         SearchPageObject.waitSearchResultAndClick("Skip");
-        SearchPageObject.waitSearchResultAndClick("Search Wikipedia");
+        //SearchPageObject.waitSearchResultAndClick("Search Wikipedia");
+        SearchPageObject.clickBySeachField();
+
         String searchLine = "Selenium";
         SearchPageObject.typeSearchLine(searchLine);
         SearchPageObject.waitForNotEmptyResultsLabel();

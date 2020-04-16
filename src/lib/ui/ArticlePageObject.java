@@ -3,6 +3,7 @@ package lib.ui;
 import io.appium.java_client.AppiumDriver;
 import lib.Platform;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 abstract public class ArticlePageObject extends  MainPageObject {
 
@@ -10,6 +11,7 @@ abstract public class ArticlePageObject extends  MainPageObject {
             TITLE,
             FOOTER_ELEMENT,
             OPTIONS_ADD_TO_MY_LIST_BUTTON,
+            OPTIONS_REMOVE_FROM_MY_LIST_BUTTON,
             ONBOARDING_BUTTON,
             NAME_LIST_FIELD,
             DESCRIPTION_LIST_FIELD,
@@ -20,7 +22,7 @@ abstract public class ArticlePageObject extends  MainPageObject {
             NAME_LIST_MENU_ADDED,
             TITLE_ARTICLE_TPL,
             TITLE_ID_TPL;
-    public ArticlePageObject (AppiumDriver driver) {
+    public ArticlePageObject (RemoteWebDriver driver) {
         super(driver);
     }
 
@@ -43,21 +45,23 @@ abstract public class ArticlePageObject extends  MainPageObject {
     }
 
     public String getArticleTitle(String nameArticle) {
+        WebElement title_element = waitForTitleElement(nameArticle);
         if (Platform.getInstance().isAndroid()) {
-            WebElement title_element = waitForTitleElement(nameArticle);
             return title_element.getTagName();
-        } else {
-            WebElement title_element = waitForTitleElement(nameArticle);
+        } else if (Platform.getInstance().isIOS()){
             return title_element.getAttribute("name");
+        } else {
+            return title_element.getText();
         }
     }
 
     public void swipeToFooter() {
         if (Platform.getInstance().isAndroid()) {
             this.swipeUpToFindElement(FOOTER_ELEMENT, "Cannot find the end of article", 20);
-
-        } else {
+        } else if (Platform.getInstance().isIOS()){
             this.swipeUpFillElementAppear(FOOTER_ELEMENT, "Cannot find the end of article", 20);
+        } else {
+            this.scrollWebPageTillElementNotVisible(FOOTER_ELEMENT, "Cannot find the end of article", 20);
         }
     }
 
@@ -81,9 +85,33 @@ abstract public class ArticlePageObject extends  MainPageObject {
     }
 
     public void addArticlesToMySaved() {
-        this.waitForElementAndClick(OPTIONS_ADD_TO_MY_LIST_BUTTON, "Cannot find options to add article to reading list", 5);
+        if (Platform.getInstance().isMw()) {
+            this.removeArticleFromSavedIfAdded();
+        }
+        this.waitForElementAndClick(OPTIONS_ADD_TO_MY_LIST_BUTTON,
+                "Cannot find options to add article to reading list",
+                25);
     }
 
+    public void removeArticleFromSavedIfAdded() {
+        if (this.isElementPresent(OPTIONS_REMOVE_FROM_MY_LIST_BUTTON)) {
+            this.waitForElementAndClick(OPTIONS_REMOVE_FROM_MY_LIST_BUTTON,
+                    "Cannot click button to remove an article from saved", 20);
+        };
+        this.waitForElementPresent(OPTIONS_ADD_TO_MY_LIST_BUTTON,
+                "Cannot find button to add an article to saved list after it from this list before");
+    }
+
+    public void closeArticle() {
+        if (Platform.getInstance().isIOS() || Platform.getInstance().isAndroid()) {
+            this.waitForElementAndClick(CLOSE_ARTICLE_BUTTON,
+                    "Cannot close article, cannot find X link",
+                    5);
+        } else {
+            System.out.println("Method closeArticle() do nothing for platform " + Platform.getInstance().getPlatformVar());
+        }
+
+    }
 
 
 }

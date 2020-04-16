@@ -5,6 +5,7 @@ import lib.Platform;
 import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.util.List;
 
@@ -21,9 +22,10 @@ abstract public class SearchPageObject extends MainPageObject {
             SEARCH_RESULT_LIST_BY_SUBSTRING_TPL,
             SEARCH_RESULT_BY_SUBSTRING_TPL,
             SEARCH_RESULT_LIST_TITLE_TPL,
-            SEARCH_RESULT_LIST_DESCRIPTION_TPL;
+            SEARCH_RESULT_LIST_DESCRIPTION_TPL,
+            SEARCH_BUTTON_CLEAR;
 
-    public SearchPageObject(AppiumDriver driver) {
+    public SearchPageObject(RemoteWebDriver driver) {
 
         super(driver);
     }
@@ -45,7 +47,9 @@ abstract public class SearchPageObject extends MainPageObject {
     }
 
     public void initSearchInputAndCheckText(String search_line) {
-        this.waitForElementAndClick(SEARCH_INIT_ELEMENT, "Cannot find Search Wikipedia input", 25);
+        if (driver instanceof AppiumDriver) {
+            this.waitForElementAndClick(SEARCH_INIT_ELEMENT, "Cannot find Search Wikipedia input", 25);
+        }
         this.waitForElementAndCheckText(SEARCH_INPUT, search_line, "Cannot find Search Wikipedia input",  25);
     }
 
@@ -64,7 +68,7 @@ abstract public class SearchPageObject extends MainPageObject {
     }
 
     public void waitForCancelButtonToAppear() {
-        this.waitForElementPresent(SEARCH_CANCEL_BUTTON, "Cannot find search cancel button", 5);
+        this.waitForElementPresent(SEARCH_CANCEL_BUTTON, "Cannot find search cancel button", 15);
     }
 
     public void waitForCancelButtonToDisapper() {
@@ -72,16 +76,16 @@ abstract public class SearchPageObject extends MainPageObject {
     }
 
     public void clickCancelSearch() {
-        this.waitForElementAndClick(SEARCH_CANCEL_BUTTON, "Cannot find and click cancel button", 5);
+        this.waitForElementAndClick(SEARCH_CANCEL_BUTTON, "Cannot find and click cancel button", 15);
     }
 
     public void typeSearchLine(String search_line) {
-        this.waitForElementAndSendKeys(SEARCH_INPUT, search_line, "Cannot find search input", 15);
+        this.waitForElementAndSendKeys(SEARCH_INPUT, search_line, "Cannot find search input", 25);
     }
 
     public void clickByArticleWithSubstring(String subString) {
         String search_result_xpath = getResultSearchElement(SEARCH_RESULT_LIST_BY_SUBSTRING_TPL, subString);
-        this.waitForElementAndClick(search_result_xpath, "Cannot find and click search result with substring " + subString, 10);
+        this.waitForElementAndClick(search_result_xpath, "Cannot find and click search result with substring " + subString, 20);
     }
 
     public void waitSearchResultAndClick(String subString) {
@@ -93,13 +97,17 @@ abstract public class SearchPageObject extends MainPageObject {
 
     public void waitAndCheckArticlesMoreZero() {
         waitForElementPresent(SEARCH_RESULT_LIST_IMAGE,"");
-        List listArticle = driver.findElements(By.xpath(SEARCH_RESULT_LIST_IMAGE));
+        List listArticle = driver.findElements(getLocatorByString(SEARCH_RESULT_LIST_IMAGE));
         Assert.assertTrue("Нет статей на странице", listArticle.size()>0);
     }
 
     public void waitAndCheckArticlesEquallyZero() {
-        waitForElementAndClear(SEARCH_INPUT, "Cannot find search field", 5);
-        List listArticle = driver.findElements(By.xpath(SEARCH_RESULT_LIST_IMAGE));
+        if (driver instanceof AppiumDriver) {
+            waitForElementAndClear(SEARCH_INPUT, "Cannot find search field", 5);
+        } else {
+            waitForElementAndClear(SEARCH_BUTTON_CLEAR, "Cannot find search field", 5);
+        }
+        List listArticle = driver.findElements(getLocatorByString(SEARCH_RESULT_LIST_IMAGE));
         Assert.assertEquals("Список статей не пустой", 0, listArticle.size());
     }
 

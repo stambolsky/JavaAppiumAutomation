@@ -3,6 +3,7 @@ package lib.ui.ios;
 import io.appium.java_client.AppiumDriver;
 import lib.ui.NavigationUI;
 import lib.ui.android.AndroidNavigationUI;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 public class IOSNavigationUI extends NavigationUI {
 
@@ -15,7 +16,7 @@ public class IOSNavigationUI extends NavigationUI {
         CLOSE_BUTTON = "id:Close";
     }
 
-    public IOSNavigationUI(AppiumDriver driver) {
+    public IOSNavigationUI(RemoteWebDriver driver) {
         super(driver);
     }
 }

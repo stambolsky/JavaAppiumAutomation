@@ -2,6 +2,7 @@ package lib.ui.ios;
 
 import io.appium.java_client.AppiumDriver;
 import lib.ui.MyLIstPageObject;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 public class IOSMyLIstPageObject extends MyLIstPageObject {
 
@@ -9,7 +10,7 @@ public class IOSMyLIstPageObject extends MyLIstPageObject {
         FIND_ELEMENT_BY_SUBSTRING_TPL = "id:{SUBSTRING}";
     }
 
-    public IOSMyLIstPageObject(AppiumDriver driver) {
+    public IOSMyLIstPageObject(RemoteWebDriver driver) {
         super(driver);
     }
 }
